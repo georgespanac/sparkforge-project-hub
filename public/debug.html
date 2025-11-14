@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - ChainInvoice</title>
+    <style>
+        body { 
+            font-family: monospace; 
+            padding: 20px; 
+            background: #0a0a0a; 
+            color: #fff; 
+        }
+        .section { 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            background: #1a1a1a; 
+            border-radius: 8px; 
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .warning { color: #fbbf24; }
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+        pre { 
+            background: #000; 
+            padding: 10px; 
+            overflow-x: auto; 
+            border-radius: 4px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 ChainInvoice Debug Console</h1>
+    
+    <div class="section">
+        <h2>Environment Variables</h2>
+        <div id="env-check"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Page Info</h2>
+        <div id="page-info"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Actions</h2>
+        <button onclick="window.location.href='/'">Go to Home</button>
+        <button onclick="window.location.href='/dashboard/business'">Go to Business Dashboard</button>
+        <button onclick="checkConsole()">Check Console Errors</button>
+    </div>
+    
+    <div class="section">
+        <h2>Console Output</h2>
+        <pre id="console-output">Waiting for logs...</pre>
+    </div>
+
+    <script>
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        const logs = [];
+        
+        function addLog(type, ...args) {
+            const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            logs.push(`[${type}] ${msg}`);
+            document.getElementById('console-output').textContent = logs.slice(-20).join('\n');
+        }
+        
+        console.log = function(...args) {
+            addLog('LOG', ...args);
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            addLog('ERROR', ...args);
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            addLog('WARN', ...args);
+            originalWarn.apply(console, args);
+        };
+        
+        // Check environment
+        function checkEnv() {
+            const envDiv = document.getElementById('env-check');
+            
+            // Note: Vite env vars are only available in the built app, not in static HTML
+            envDiv.innerHTML = `
+                <p class="warning">⚠️ Environment variables are only accessible in the React app</p>
+                <p>To check them, open Business Dashboard and check browser console</p>
+                <p>Expected values:</p>
+                <pre>VITE_PACKAGE_ID=0x59a53a2ba5ab4132fa687db5b7ab0c150fdfcfd0a2beb81f8933502eb76e3034
+VITE_REGISTRY_ID=0xd2e57f2c475ffc569d4bb9ca5be9e4a14418825a235896ecb923e41cf1bc552f</pre>
+            `;
+        }
+        
+        function checkConsole() {
+            alert('Check the browser DevTools console (F12) for errors');
+        }
+        
+        // Page info
+        const pageInfo = document.getElementById('page-info');
+        pageInfo.innerHTML = `
+            <p><strong>URL:</strong> ${window.location.href}</p>
+            <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+            <p><strong>User Agent:</strong> ${navigator.userAgent}</p>
+        `;
+        
+        checkEnv();
+        
+        console.log('Debug page loaded successfully');
+    </script>
+</body>
+</html>
+

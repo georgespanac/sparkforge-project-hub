@@ -19,3 +19,16 @@ source = { git = "https://github.com/MystenLabs/sui.git", rev = "framework/mainn
 dependencies = [
   { id = "MoveStdlib", name = "MoveStdlib" },
 ]
+
+[move.toolchain-version]
+compiler-version = "1.57.0"
+edition = "2024"
+flavor = "sui"
+
+[env]
+
+[env.testnet]
+chain-id = "4c78adac"
+original-published-id = "0x59a53a2ba5ab4132fa687db5b7ab0c150fdfcfd0a2beb81f8933502eb76e3034"
+latest-published-id = "0x59a53a2ba5ab4132fa687db5b7ab0c150fdfcfd0a2beb81f8933502eb76e3034"
+published-version = "1"

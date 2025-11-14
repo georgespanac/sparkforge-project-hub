@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,6 +29,18 @@ const BusinessDashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
 
+  // Debug: Log component mount and wallet status
+  useEffect(() => {
+    console.log('🏗️ BusinessDashboard mounted');
+    console.log('👛 Wallet status:', currentWallet ? 'Connected' : 'Not connected');
+    console.log('📦 PACKAGE_ID:', import.meta.env.VITE_PACKAGE_ID);
+    console.log('🏛️ REGISTRY_ID:', import.meta.env.VITE_REGISTRY_ID);
+  }, []);
+
+  useEffect(() => {
+    console.log('👛 Wallet changed:', currentWallet);
+  }, [currentWallet]);
+
   const {
     register,
     handleSubmit,
@@ -47,28 +59,41 @@ const BusinessDashboard = () => {
   });
 
   const onSubmit = async (data: InvoiceFormData) => {
+    console.log('📝 Form submitted with data:', data);
+    console.log('👛 Current wallet:', currentWallet);
+    console.log('📦 PACKAGE_ID:', import.meta.env.VITE_PACKAGE_ID);
+    console.log('🏛️ REGISTRY_ID:', import.meta.env.VITE_REGISTRY_ID);
+    
     if (!currentWallet) {
+      console.error('❌ No wallet connected');
       toast.error("Please connect your wallet first");
       return;
     }
 
     setIsSubmitting(true);
+    console.log('⏳ Starting invoice creation...');
 
     try {
       // Generate document hash from file or description
       let docHash: Uint8Array | undefined;
       if (invoiceFile) {
+        console.log('📄 Hashing invoice file:', invoiceFile.name);
         docHash = await hashFile(invoiceFile);
         toast.info("Invoice document hashed successfully");
       }
 
       // Convert form data to invoice parameters
+      console.log('🔄 Converting form data to invoice params...');
       const params = await formDataToInvoiceParams(data, docHash);
+      console.log('✅ Invoice params created:', params);
 
       // Create transaction
+      console.log('🏗️ Building transaction...');
       const tx = createIssueInvoiceTransaction(params);
+      console.log('✅ Transaction built successfully');
 
       // Sign and execute transaction
+      console.log('🖊️ Requesting wallet signature...');
       toast.info("Signing transaction...");
       
       try {
@@ -80,6 +105,7 @@ const BusinessDashboard = () => {
           },
         });
 
+        console.log('✅ Transaction successful!', result);
         toast.success("Invoice created successfully!", {
           description: `Transaction: ${result.digest}`,
         });
@@ -89,14 +115,23 @@ const BusinessDashboard = () => {
         setInvoiceFile(null);
         setIsSubmitting(false);
       } catch (error: any) {
-        console.error("Error creating invoice:", error);
+        console.error("❌ Error creating invoice:", error);
+        console.error("Error details:", {
+          message: error.message,
+          code: error.code,
+          stack: error.stack
+        });
         toast.error("Failed to create invoice", {
           description: error.message || "An unexpected error occurred",
         });
         setIsSubmitting(false);
       }
     } catch (error: any) {
-      console.error("Error preparing invoice:", error);
+      console.error("❌ Error preparing invoice:", error);
+      console.error("Error details:", {
+        message: error.message,
+        stack: error.stack
+      });
       toast.error("Failed to prepare invoice", {
         description: error.message || "An unexpected error occurred",
       });
@@ -433,9 +468,23 @@ const BusinessDashboard = () => {
                     </div>
 
                     {!currentWallet && (
-                      <div className="p-4 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">
-                          Please connect your wallet to create an invoice.
+                      <div className="p-4 bg-muted rounded-lg border-2 border-yellow-500/50">
+                        <p className="text-sm text-yellow-600 dark:text-yellow-400 font-semibold">
+                          ⚠️ Wallet Not Connected
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Please connect your wallet using the button in the top-right corner to create an invoice.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {currentWallet && (
+                      <div className="p-4 bg-green-500/10 rounded-lg border-2 border-green-500/50">
+                        <p className="text-sm text-green-600 dark:text-green-400 font-semibold">
+                          ✅ Wallet Connected
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1 break-all">
+                          Address: {currentWallet.accounts[0]?.address || 'Unknown'}
                         </p>
                       </div>
                     )}
