@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Coins, Menu, X } from "lucide-react";
+import { Coins, Menu, X, Moon, Sun } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 export const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
@@ -31,6 +37,18 @@ export const Navigation = () => {
             <Link to="/dashboard/investor" className="text-sm font-medium hover:text-primary transition-colors">
               For Investors
             </Link>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={toggleTheme}
+              className="mr-2"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
             <Button variant="outline" size="sm">
               Connect Wallet
             </Button>
@@ -76,9 +94,23 @@ export const Navigation = () => {
             >
               For Investors
             </Link>
-            <Button variant="outline" size="sm" className="w-full">
-              Connect Wallet
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={toggleTheme}
+                className="flex-shrink-0"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1">
+                Connect Wallet
+              </Button>
+            </div>
           </div>
         )}
       </div>
