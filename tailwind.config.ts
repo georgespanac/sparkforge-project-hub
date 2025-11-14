@@ -48,6 +48,16 @@ export default {
         info: {
           DEFAULT: "hsl(var(--info))",
         },
+        violet: {
+          400: "hsl(var(--violet-400))",
+          500: "hsl(var(--violet-500))",
+          600: "hsl(var(--violet-600))",
+        },
+        cyan: {
+          300: "hsl(var(--cyan-300))",
+          400: "hsl(var(--cyan-400))",
+          500: "hsl(var(--cyan-500))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
