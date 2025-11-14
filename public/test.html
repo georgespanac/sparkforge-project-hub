@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Test</title>
+</head>
+<body style="background: #000; color: #fff; padding: 40px; font-family: sans-serif;">
+    <h1>✅ Static HTML Test - This should be visible!</h1>
+    <p>If you see this, the web server is working.</p>
+    <p>Time: <script>document.write(new Date().toLocaleString())</script></p>
+    <hr>
+    <p>Now testing React...</p>
+    <div id="react-test"></div>
+    
+    <script type="module">
+        import { createRoot } from '/node_modules/.vite/deps/react-dom_client.js?v=f4ca2dc0';
+        import { createElement } from '/node_modules/.vite/deps/react.js?v=f4ca2dc0';
+        
+        const root = createRoot(document.getElementById('react-test'));
+        root.render(createElement('div', {
+            style: { color: 'lime', fontSize: '2rem', marginTop: '20px' }
+        }, '✅ React is rendering!'));
+        
+        console.log('Test complete');
+    </script>
+</body>
+</html>
+

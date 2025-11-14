@@ -59,6 +59,61 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Sui Blockchain SDK (@mysten/sui, @mysten/wallet-kit)
+- React Hook Form with Zod validation
+
+## Invoice Creation Feature
+
+The invoice creation feature allows businesses to tokenize invoices on the Sui blockchain. Here's what's implemented:
+
+### Features:
+- **Form Validation**: Complete form validation using React Hook Form and Zod
+- **Wallet Integration**: Sui wallet connection and transaction signing
+- **Document Hashing**: Optional invoice document upload with SHA-256 hashing
+- **Smart Contract Integration**: Creates on-chain invoice objects via Move smart contract
+- **Error Handling**: Comprehensive error handling with user-friendly notifications
+- **Transaction Tracking**: Shows transaction digests and status updates
+
+### Setup:
+
+1. **Install Dependencies**:
+   ```sh
+   npm install
+   ```
+
+2. **Configure Environment Variables**:
+   Create a `.env` file with:
+   ```
+   VITE_PACKAGE_ID=your_package_id_here
+   VITE_REGISTRY_ID=your_registry_id_here
+   ```
+   These values come from deploying your Move smart contract.
+
+3. **Deploy Smart Contract**:
+   - Deploy the `invoice_finance` Move module to Sui testnet/devnet
+   - Initialize the `OracleRegistry` shared object
+   - Update the environment variables with the package ID and registry ID
+
+4. **Run Development Server**:
+   ```sh
+   npm run dev
+   ```
+
+### Usage:
+
+1. Connect your Sui wallet using the "Connect Wallet" button
+2. Navigate to Business Dashboard → "Create New" tab
+3. Fill in the invoice details:
+   - Client Name (required)
+   - Invoice Amount (required)
+   - Invoice ID (required)
+   - Due Date (required)
+   - Discount Rate (required, 0-100%)
+   - Description (optional)
+   - Invoice Document (optional - PDF or image)
+4. Click "Tokenize Invoice" to create the invoice on-chain
+
+The invoice will be minted as an on-chain object that can be financed by investors on the marketplace.
 
 ## How can I deploy this project?
 
